@@ -14,7 +14,7 @@ const cards = [
   {
     href: '/upload/lyrics',
     title: '가사 쓰기',
-    description: '가사만 먼저 공유합니다. 운영자가 음악을 입혀 보내드립니다.',
+    description: '가사만 먼저 공유합니다. 다른 사용자들이 음악을 입혀 제안하고, 그중 하나를 채택할 수 있습니다.',
     accent: '가사 → 음악',
   },
   {

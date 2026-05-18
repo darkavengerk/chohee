@@ -16,7 +16,7 @@ pnpm --filter @chohee/web dev
 - `/me`, `/me/edit` — 마이페이지/프로필 수정
 - `/upload` — 무엇을 올릴지 분기
 - `/upload/track` — 곡 업로드 (ffmpeg.wasm 인코딩 포함)
-- `/upload/lyrics` — 가사 작성 + 음악 생성 요청
+- `/upload/lyrics` — 가사 작성 + "음악 제안 받기" 의향 발행 (Phase 2에서 다른 사용자의 제안 수집·채택 UI 추가)
 - `/upload/album` — 앨범 생성 + 항목 배치
 - `/discover` — 둘러보기 (Phase 2에서 채워짐)
 - `/api/auth/kakao/callback` — 카카오 redirect_uri (Route Handler)

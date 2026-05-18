@@ -85,7 +85,8 @@ export default async function HomePage() {
               </h1>
               <p className="mt-4 max-w-[520px] text-[14px] leading-[1.7] text-fg-2">
                 초희는 AI로 만든 음악을 공유하는 한국어 스트리밍 플랫폼이자, 가사만으로도 작품을
-                나눌 수 있는 공간입니다. 운영자와 다른 창작자가 당신의 가사에 음악을 입혀줍니다.
+                나눌 수 있는 공간입니다. 다른 창작자들이 당신의 가사에 음악을 입혀 제안하고,
+                당신은 그중 하나를 채택해 공식 음원으로 만듭니다.
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">

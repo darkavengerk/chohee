@@ -137,9 +137,11 @@ export function LyricsWriteFlow() {
               onChange={(e) => setRequestMusic(e.target.checked)}
             />
             <div>
-              <span>이 가사에 음악을 입혀주세요</span>
+              <span>이 가사에 음악 제안 받기</span>
               <p className="mt-1 text-[11.5px] text-fg-3">
-                운영자가 외부 AI 도구로 음악을 만들어 보내드립니다. 완성되면 알림으로 알려드려요.
+                다른 사용자들이 이 가사에 음악을 입혀 제안할 수 있습니다. 마음에 드는 제안을
+                채택하면 그 곡이 이 가사의 공식 음원이 됩니다. 새 제안이 도착하면 알림으로
+                알려드려요.
               </p>
             </div>
           </label>
