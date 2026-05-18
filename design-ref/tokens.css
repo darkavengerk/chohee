@@ -1,0 +1,189 @@
+/* ─────────────────────────────────────────────────────────────
+   Chohee — Design Tokens
+   "가사가 음악이 되는 공간"
+   따뜻한 차콜 베이스 + 크림빛 오프화이트 + 앰버 톤 액센트
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Surfaces (warm charcoal, slight brown undertone) ── */
+  --bg-0: oklch(0.155 0.008 60);   /* page background — deepest */
+  --bg-1: oklch(0.185 0.008 60);   /* card / surface raised */
+  --bg-2: oklch(0.22 0.008 60);    /* modal / hover */
+  --bg-3: oklch(0.27 0.008 60);    /* input / chip */
+  --bg-4: oklch(0.32 0.008 60);    /* divider strong */
+
+  /* ── Borders ── */
+  --bd-1: oklch(0.28 0.008 60);
+  --bd-2: oklch(0.36 0.008 60);
+
+  /* ── Foreground (cream-tinted off-white) ── */
+  --fg-1: oklch(0.96 0.012 85);    /* primary text — cream */
+  --fg-2: oklch(0.82 0.012 80);    /* body secondary */
+  --fg-3: oklch(0.65 0.01 75);     /* muted / metadata */
+  --fg-4: oklch(0.48 0.008 70);    /* disabled / faint */
+
+  /* ── Accent (default: amber; overridden by Tweaks via [data-accent]) ── */
+  --accent: oklch(0.78 0.14 70);          /* amber main */
+  --accent-soft: oklch(0.78 0.14 70 / 0.14);
+  --accent-fg: oklch(0.18 0.02 60);       /* text on accent fill */
+  --accent-2: oklch(0.65 0.12 40);        /* secondary warm — terracotta */
+
+  /* ── Semantic (cool tones reserved for status only) ── */
+  --info:    oklch(0.72 0.07 230);
+  --success: oklch(0.72 0.1  150);
+  --warn:    oklch(0.8  0.13 80);
+  --danger:  oklch(0.66 0.16 25);
+
+  /* ── Music-generation status (warm-coded) ── */
+  --st-waiting:    oklch(0.6  0.02 70);   /* 음악 대기 중 — neutral muted */
+  --st-progress:   oklch(0.78 0.14 70);   /* 생성 중 — amber, pulsing */
+  --st-complete:   oklch(0.72 0.1 150);   /* 완성 — sage */
+  --st-revision:   oklch(0.68 0.13 40);   /* 보완 요청 — terracotta */
+
+  /* ── Type ── */
+  --font-sans: "Pretendard", "Pretendard Variable", -apple-system, system-ui,
+               "Apple SD Gothic Neo", "Malgun Gothic", "Helvetica Neue", sans-serif;
+  --font-serif: "Noto Serif KR", "Nanum Myeongjo", "본명조", "Source Serif 4",
+                "Iowan Old Style", "Apple SD Gothic Neo", serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, "Menlo", monospace;
+
+  /* ── Spacing (4px base) ── */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px;
+  --s-12: 48px; --s-16: 64px; --s-20: 80px; --s-24: 96px;
+
+  /* ── Radii (부드럽지만 너무 둥글지 않게) ── */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+
+  /* ── Shadows (다크에서 약하게, 표면 단계로 깊이감) ── */
+  --sh-1: 0 1px 0 oklch(1 0 0 / 0.04) inset, 0 1px 2px oklch(0 0 0 / 0.25);
+  --sh-2: 0 1px 0 oklch(1 0 0 / 0.04) inset, 0 4px 12px oklch(0 0 0 / 0.32);
+  --sh-3: 0 1px 0 oklch(1 0 0 / 0.05) inset, 0 12px 32px oklch(0 0 0 / 0.42);
+  --sh-glow: 0 0 0 1px oklch(0.78 0.14 70 / 0.35), 0 0 24px oklch(0.78 0.14 70 / 0.18);
+
+  /* ── Motion (부드럽고 차분하게) ── */
+  --t-fast: 120ms;
+  --t-base: 200ms;
+  --t-slow: 360ms;
+  --t-page: 480ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Accent variants — toggled by Tweaks (data-accent on .chohee root) */
+[data-accent="amber"] {
+  --accent: oklch(0.78 0.14 70);
+  --accent-soft: oklch(0.78 0.14 70 / 0.14);
+  --accent-fg: oklch(0.18 0.02 60);
+  --accent-2: oklch(0.65 0.12 40);
+}
+[data-accent="terracotta"] {
+  --accent: oklch(0.66 0.13 38);
+  --accent-soft: oklch(0.66 0.13 38 / 0.16);
+  --accent-fg: oklch(0.98 0.01 80);
+  --accent-2: oklch(0.78 0.11 80);
+}
+[data-accent="mustard"] {
+  --accent: oklch(0.82 0.14 92);
+  --accent-soft: oklch(0.82 0.14 92 / 0.14);
+  --accent-fg: oklch(0.18 0.02 60);
+  --accent-2: oklch(0.62 0.11 50);
+}
+[data-accent="coral"] {
+  --accent: oklch(0.74 0.15 28);
+  --accent-soft: oklch(0.74 0.15 28 / 0.16);
+  --accent-fg: oklch(0.18 0.02 60);
+  --accent-2: oklch(0.8 0.12 75);
+}
+
+/* ───────── Base typographic resets inside .chohee scope ───────── */
+.chohee, .chohee * { box-sizing: border-box; }
+.chohee {
+  font-family: var(--font-sans);
+  color: var(--fg-1);
+  background: var(--bg-0);
+  font-feature-settings: "ss01", "cv01";
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
+  line-height: 1.5;
+}
+
+.chohee h1, .chohee h2, .chohee h3, .chohee h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Display (English) — Noto Serif KR doubles as English serif but we tighten */
+.serif { font-family: var(--font-serif); letter-spacing: 0; }
+.mono  { font-family: var(--font-mono);  letter-spacing: 0; }
+
+/* ───────── Lyrics — first-class typographic treatment ───────── */
+.lyrics {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: calc(22px * var(--lyrics-scale, 1));
+  line-height: 1.95;          /* 시집의 행간 */
+  letter-spacing: 0.01em;     /* 한글 자간 살짝 벌림 */
+  color: var(--fg-1);
+  white-space: pre-wrap;
+  word-break: keep-all;
+  text-wrap: pretty;
+}
+.lyrics--lg { font-size: calc(28px * var(--lyrics-scale, 1)); line-height: 2.05; }
+.lyrics--xl { font-size: calc(36px * var(--lyrics-scale, 1)); line-height: 2.0;  letter-spacing: 0.012em; }
+.lyrics .stanza + .stanza { margin-top: 1.4em; }
+.lyrics .verse { display: block; }
+
+/* Scrollbar dressing — subtle inside dark surfaces */
+.chohee ::-webkit-scrollbar { width: 8px; height: 8px; }
+.chohee ::-webkit-scrollbar-thumb {
+  background: var(--bd-2); border-radius: 8px;
+}
+.chohee ::-webkit-scrollbar-track { background: transparent; }
+
+/* Focus ring — accent, subtle */
+.chohee :where(button, a, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* Utility — surface levels */
+.surf-1 { background: var(--bg-1); }
+.surf-2 { background: var(--bg-2); }
+.surf-3 { background: var(--bg-3); }
+
+/* Animated noise / grain — subtle, "handmade" texture */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.85  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+}
+
+/* Pulse for in-progress status */
+@keyframes chohee-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+.pulse { animation: chohee-pulse 1.8s var(--ease) infinite; }
+
+/* Waveform bar entry */
+@keyframes chohee-wave {
+  0%, 100% { transform: scaleY(0.4); }
+  50%      { transform: scaleY(1);   }
+}
