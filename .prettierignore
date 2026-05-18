@@ -1,0 +1,9 @@
+node_modules
+dist
+.next
+.turbo
+.wrangler
+pnpm-lock.yaml
+design-ref
+Chohee
+*.zip

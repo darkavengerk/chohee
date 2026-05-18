@@ -1,0 +1,26 @@
+{
+  "name": "@chohee/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "deploy": "wrangler deploy",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .turbo .wrangler dist"
+  },
+  "dependencies": {
+    "@chohee/db": "workspace:*",
+    "@chohee/shared": "workspace:*",
+    "drizzle-orm": "^0.33.0",
+    "hono": "^4.5.11",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240909.0",
+    "typescript": "^5.5.4",
+    "wrangler": "^3.78.0"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "chohee",
+  "version": "0.1.0",
+  "private": true,
+  "description": "가사가 음악이 되는 공간 — AI 음악·가사 공유 플랫폼",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "db:generate": "pnpm --filter @chohee/db generate",
+    "db:migrate:local": "pnpm --filter @chohee/db migrate:local",
+    "db:migrate:prod": "pnpm --filter @chohee/db migrate:prod"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "turbo": "^2.1.2",
+    "typescript": "^5.5.4"
+  }
+}

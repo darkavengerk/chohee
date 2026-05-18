@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './tokens.css';
+@import './fonts.css';
+
+@layer base {
+  html,
+  body {
+    background: var(--bg-0);
+    color: var(--fg-1);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01', 'cv01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.005em;
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--bd-2);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  :where(button, a, input, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--r-sm);
+  }
+}
+
+@layer components {
+  .serif {
+    font-family: var(--font-serif);
+    letter-spacing: 0;
+  }
+  .mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0;
+  }
+
+  /* 가사 — 1급 콘텐츠 타이포그래피 */
+  .lyrics {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+    color: var(--fg-1);
+    white-space: pre-wrap;
+    word-break: keep-all;
+    text-wrap: pretty;
+  }
+  .lyrics--lg {
+    font-size: 28px;
+    line-height: 2.05;
+  }
+  .lyrics--xl {
+    font-size: 36px;
+    line-height: 2;
+    letter-spacing: 0.012em;
+  }
+  .lyrics .stanza + .stanza {
+    margin-top: 1.4em;
+  }
+  .lyrics .verse {
+    display: block;
+  }
+
+  /* 표면 단계 유틸리티 */
+  .surf-1 {
+    background: var(--bg-1);
+  }
+  .surf-2 {
+    background: var(--bg-2);
+  }
+  .surf-3 {
+    background: var(--bg-3);
+  }
+
+  /* 그레인 텍스처 — 손으로 만든 느낌 */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.85  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+    opacity: 0.5;
+  }
+}
+
+@layer utilities {
+  @keyframes chohee-pulse {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  .animate-pulse-soft {
+    animation: chohee-pulse 1.8s var(--ease) infinite;
+  }
+
+  @keyframes chohee-wave {
+    0%,
+    100% {
+      transform: scaleY(0.4);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+  .animate-wave {
+    animation: chohee-wave 0.9s ease-in-out infinite;
+  }
+
+  @keyframes chohee-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in {
+    animation: chohee-fade-in var(--t-base) var(--ease-out);
+  }
+}

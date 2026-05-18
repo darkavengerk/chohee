@@ -1,0 +1,33 @@
+name = "chohee-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+WEB_ORIGIN = "http://localhost:3000"
+KAKAO_REDIRECT_URI = "http://localhost:3000/api/auth/kakao/callback"
+JWT_ACCESS_TTL_SECONDS = "3600"
+JWT_REFRESH_TTL_SECONDS = "2592000"
+R2_BUCKET_NAME = "chohee-media"
+
+# 비밀 값은 wrangler secret put으로 등록 (다음 항목들):
+#   KAKAO_CLIENT_ID, KAKAO_CLIENT_SECRET, JWT_SECRET,
+#   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+
+[[d1_databases]]
+binding = "DB"
+database_name = "chohee"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "../../packages/db/drizzle"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "chohee-media"
+
+[env.production]
+name = "chohee-api-production"
+
+[env.production.vars]
+WEB_ORIGIN = "https://chohee.app"
+KAKAO_REDIRECT_URI = "https://chohee.app/api/auth/kakao/callback"
+R2_BUCKET_NAME = "chohee-media"
