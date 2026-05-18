@@ -205,4 +205,91 @@ router.get('/kakao/url', (c) => {
   });
 });
 
+// ── 로컬 dev 전용 빠른 로그인 ──
+// 카카오 없이 stub 사용자로 즉시 JWT 쿠키를 받기 위한 엔드포인트.
+// env.DEV_LOGIN_ENABLED가 "1"일 때만 동작. 운영 환경에는 절대 활성화 금지.
+
+router.get('/dev-status', (c) => {
+  return ok(c, { devLoginEnabled: c.env.DEV_LOGIN_ENABLED === '1' });
+});
+
+router.post('/dev-login', async (c) => {
+  if (c.env.DEV_LOGIN_ENABLED !== '1') {
+    return fail(c, 'NOT_FOUND', '엔드포인트를 찾을 수 없습니다');
+  }
+  const body = (await c.req.json().catch(() => ({}))) as {
+    handle?: string;
+    displayName?: string;
+    isAdmin?: boolean;
+  };
+  const rawHandle = (body.handle ?? 'dev_tester').toLowerCase().replace(/[^a-z0-9_]/g, '');
+  const handle = rawHandle.length >= 2 ? rawHandle.slice(0, 24) : 'dev_tester';
+  const displayName = body.displayName?.slice(0, 40) || '개발 테스터';
+  const isAdmin = Boolean(body.isAdmin);
+
+  const db = createDb(c.env.DB);
+  const existing = await db
+    .select()
+    .from(schema.users)
+    .where(eq(schema.users.handle, handle))
+    .limit(1);
+
+  let userId: string;
+  let resolvedAdmin: boolean;
+  let resolvedHandle: string;
+  if (existing[0]) {
+    userId = existing[0].id;
+    resolvedAdmin = existing[0].isAdmin;
+    resolvedHandle = existing[0].handle;
+    if (isAdmin && !existing[0].isAdmin) {
+      await db
+        .update(schema.users)
+        .set({ isAdmin: true, updatedAt: new Date().toISOString() })
+        .where(eq(schema.users.id, userId));
+      resolvedAdmin = true;
+    }
+  } else {
+    userId = newId();
+    resolvedAdmin = isAdmin;
+    resolvedHandle = handle;
+    await db.insert(schema.users).values({
+      id: userId,
+      handle,
+      displayName,
+      email: null,
+      avatarUrl: null,
+      isAdmin,
+    });
+    await db.insert(schema.authProviders).values({
+      id: newId(),
+      userId,
+      provider: 'kakao',
+      providerUserId: `dev:${handle}`,
+      rawProfile: JSON.stringify({ dev: true }),
+    });
+  }
+
+  const access = await signAccessToken(
+    { sub: userId, handle: resolvedHandle, isAdmin: resolvedAdmin },
+    c.env,
+  );
+  const refresh = await issueRefreshToken(c.env);
+  await db.insert(schema.refreshTokens).values({
+    id: newId(),
+    userId,
+    tokenHash: refresh.tokenHash,
+    expiresAt: refresh.expiresAt.toISOString(),
+    userAgent: 'dev-login',
+  });
+  await setAuthCookies(
+    c,
+    c.env.WEB_ORIGIN,
+    access.token,
+    access.expiresAt,
+    refresh.token,
+    refresh.expiresAt,
+  );
+  return ok(c, { userId, handle: resolvedHandle, isAdmin: resolvedAdmin });
+});
+
 export default router;

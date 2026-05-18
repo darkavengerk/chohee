@@ -16,6 +16,10 @@ out/
 .env.*.local
 !.env.example
 
+# wrangler 로컬 비밀
+.dev.vars
+!.dev.vars.example
+
 # logs
 *.log
 npm-debug.log*

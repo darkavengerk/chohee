@@ -17,6 +17,9 @@ export interface Env {
   R2_ACCOUNT_ID: string;
   R2_ACCESS_KEY_ID: string;
   R2_SECRET_ACCESS_KEY: string;
+
+  // 로컬 dev 전용. .dev.vars에서 "1"로 설정 시 /auth/dev-login 활성화. 운영에 절대 설정 금지.
+  DEV_LOGIN_ENABLED?: string;
 }
 
 export interface AuthClaims {

@@ -1,0 +1,20 @@
+# apps/api 로컬 wrangler dev용 비밀/변수. 복사 후 .dev.vars 파일로 사용.
+# .dev.vars는 .gitignore에 들어가있어 커밋되지 않음.
+# 실제 카카오 키 없이도 사이트를 띄울 수 있도록 sensible default를 제공.
+
+# JWT 서명 키 — dev 전용. 운영에는 wrangler secret put JWT_SECRET 사용.
+JWT_SECRET=dev-only-not-secret-please-rotate-locally
+
+# 카카오 키 — 실제로 카카오 로그인 흐름까지 시험할 때만 채움. 비워두면 카카오 버튼은 동작 안 함.
+KAKAO_CLIENT_ID=
+KAKAO_CLIENT_SECRET=
+
+# R2 자격증명 — 실제 R2 업로드 흐름까지 시험할 때만 채움. 비워두면 /uploads/sign이 실패.
+R2_ACCOUNT_ID=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+
+# ── 개발용 빠른 로그인 활성화 ──
+# 1로 두면 /auth/dev-login 엔드포인트가 열려 카카오 없이 stub 사용자로 로그인 가능.
+# 절대 운영에는 1로 두지 말 것. wrangler secret으로 등록하지도 말 것.
+DEV_LOGIN_ENABLED=1
