@@ -24,7 +24,7 @@
 | 표면 | `bg-bg-0` ~ `bg-bg-4` | 0이 가장 깊은 페이지 배경, 4가 가장 밝은 디바이더 |
 | 텍스트 | `text-fg-1` ~ `text-fg-4` | 1이 강조, 4가 비활성/행번호 |
 | 경계 | `border-bd-1`, `border-bd-2` | 1이 기본, 2가 강조 |
-| 액센트 | `bg-accent`, `text-accent`, `bg-accent-soft`, `text-accent-fg` | mustard 톤. fg는 accent 위 텍스트 |
+| 액센트 | `bg-accent`, `text-accent`, `bg-accent-soft`, `text-accent-fg` | 기본은 pine(딥 그린). fg는 accent 위 텍스트 |
 | 시맨틱 | `text-info`, `text-success`, `text-warn`, `text-danger` | 차가운 톤은 시맨틱에서만 |
 | 상태 | `bg-status-waiting`, `bg-status-generating` 등 | 음악 생성 상태 4종 |
 | 간격 | `p-1` (4px) ~ `p-24` (96px) | 4px 베이스. 1=4, 2=8, 3=12, 4=16, 5=20, 6=24, 8=32, 10=40, 12=48, 16=64, 20=80, 24=96 |
@@ -63,8 +63,11 @@ import {
 
 ## 액센트 변경 (시즌 운영)
 
-루트 `<html data-accent="mustard">`에서 `mustard | amber | terracotta | coral` 중 하나로 교체.
-시스템 전체가 따라 움직인다. 새 색을 추가하지 않는다.
+루트 `<html data-accent="pine">`가 기본. `pine | moss | sage | mustard | amber | terracotta | coral` 중 하나로 교체.
+- **녹색 계열** (기본 라인업): `pine`(딥 포레스트), `moss`(웜 모스), `sage`(소프트 세이지)
+- **웜 계열** (보조/시즌): `mustard`, `amber`, `terracotta`, `coral`
+
+녹색 정체성을 더 강조하려면 `<html data-accent="pine" data-base="green">`로 표면 언더톤까지 녹색으로 시프트. 시스템 전체가 따라 움직인다. 새 색을 추가하지 않는다.
 
 ## 흔한 실수
 

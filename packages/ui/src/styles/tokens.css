@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────────────────────
    Chohee — Design Tokens
    "가사가 음악이 되는 공간"
-   따뜻한 차콜 베이스 + 크림빛 오프화이트 + 머스타드 액센트
+   따뜻한 차콜 베이스 + 크림빛 오프화이트 + 파인(딥 그린) 액센트
    ───────────────────────────────────────────────────────────── */
 
 :root {
@@ -22,11 +22,11 @@
   --fg-3: oklch(0.65 0.01 75);
   --fg-4: oklch(0.48 0.008 70);
 
-  /* ── Accent (default: mustard) ── */
-  --accent: oklch(0.82 0.14 92);
-  --accent-soft: oklch(0.82 0.14 92 / 0.14);
-  --accent-fg: oklch(0.18 0.02 60);
-  --accent-2: oklch(0.62 0.11 50);
+  /* ── Accent (default: pine — deep literary forest green) ── */
+  --accent: oklch(0.62 0.13 155);
+  --accent-soft: oklch(0.62 0.13 155 / 0.18);
+  --accent-fg: oklch(0.96 0.01 80);
+  --accent-2: oklch(0.7 0.1 50);
 
   /* ── Semantic (cool tones reserved for status only) ── */
   --info: oklch(0.72 0.07 230);
@@ -36,7 +36,7 @@
 
   /* ── Music-generation status (warm-coded) ── */
   --st-waiting: oklch(0.6 0.02 70);
-  --st-progress: oklch(0.78 0.14 70);
+  --st-progress: oklch(0.62 0.13 155);
   --st-complete: oklch(0.72 0.1 150);
   --st-revision: oklch(0.68 0.13 40);
 
@@ -73,7 +73,7 @@
   --sh-1: 0 1px 0 oklch(1 0 0 / 0.04) inset, 0 1px 2px oklch(0 0 0 / 0.25);
   --sh-2: 0 1px 0 oklch(1 0 0 / 0.04) inset, 0 4px 12px oklch(0 0 0 / 0.32);
   --sh-3: 0 1px 0 oklch(1 0 0 / 0.05) inset, 0 12px 32px oklch(0 0 0 / 0.42);
-  --sh-glow: 0 0 0 1px oklch(0.82 0.14 92 / 0.35), 0 0 24px oklch(0.82 0.14 92 / 0.18);
+  --sh-glow: 0 0 0 1px oklch(0.62 0.13 155 / 0.35), 0 0 24px oklch(0.62 0.13 155 / 0.18);
 
   /* ── Motion ── */
   --t-fast: 120ms;
@@ -85,6 +85,31 @@
 }
 
 /* Accent variants — switchable via [data-accent] attribute on root */
+
+/* ── Green family — "초록 빛깔의 초희" ── */
+[data-accent='pine'] {
+  /* deep pine — 기본값과 동일, 명시적으로 지정하고 싶을 때 */
+  --accent: oklch(0.62 0.13 155);
+  --accent-soft: oklch(0.62 0.13 155 / 0.18);
+  --accent-fg: oklch(0.96 0.01 80);
+  --accent-2: oklch(0.7 0.1 50);
+}
+[data-accent='moss'] {
+  /* deep moss — warmest green, lives well on warm charcoal */
+  --accent: oklch(0.72 0.11 135);
+  --accent-soft: oklch(0.72 0.11 135 / 0.14);
+  --accent-fg: oklch(0.16 0.02 130);
+  --accent-2: oklch(0.65 0.12 50);
+}
+[data-accent='sage'] {
+  /* soft sage — calm, paper-aged green */
+  --accent: oklch(0.78 0.08 150);
+  --accent-soft: oklch(0.78 0.08 150 / 0.14);
+  --accent-fg: oklch(0.18 0.02 140);
+  --accent-2: oklch(0.7 0.1 80);
+}
+
+/* ── Warm family (legacy / 선택지) ── */
 [data-accent='mustard'] {
   --accent: oklch(0.82 0.14 92);
   --accent-soft: oklch(0.82 0.14 92 / 0.14);
@@ -108,4 +133,18 @@
   --accent-soft: oklch(0.74 0.15 28 / 0.16);
   --accent-fg: oklch(0.18 0.02 60);
   --accent-2: oklch(0.8 0.12 75);
+}
+
+/* ── Base tone overrides ──
+   기본 베이스는 warm charcoal (hue 60). 녹색 정체성을 더 살리고 싶을 때
+   [data-base="green"]을 root에 붙이면 표면이 hue 130으로 살짝 이동 — 여전히
+   어둡고 무겁지만 언더톤이 눈에 띄게 녹색으로 바뀐다. */
+[data-base='green'] {
+  --bg-0: oklch(0.155 0.01 130);
+  --bg-1: oklch(0.185 0.01 130);
+  --bg-2: oklch(0.22 0.01 130);
+  --bg-3: oklch(0.27 0.01 130);
+  --bg-4: oklch(0.32 0.01 130);
+  --bd-1: oklch(0.28 0.01 130);
+  --bd-2: oklch(0.36 0.01 130);
 }

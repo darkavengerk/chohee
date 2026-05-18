@@ -72,45 +72,45 @@ export default async function HomePage() {
   return (
     <AppShell activeKey="home" rightActions={<UserMenu user={me} />}>
       <section className="mb-12">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.4fr_1fr]">
-          <div className="flex flex-col justify-between rounded-xl border border-bd-1 bg-bg-1 p-10 shadow-1">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr] lg:gap-8">
+          <div className="flex flex-col justify-between rounded-xl border border-bd-1 bg-bg-1 p-6 shadow-1 sm:p-8 lg:p-10">
             <div>
               <Badge tone="accent" className="mb-4">
                 가사가 음악이 되는 공간
               </Badge>
-              <h1 className="font-serif text-[40px] leading-[1.15] tracking-[0.005em] text-fg-1">
+              <h1 className="font-serif text-[28px] leading-[1.2] tracking-[0.005em] text-fg-1 sm:text-[34px] sm:leading-[1.15] lg:text-[40px]">
                 당신이 쓴 한 줄이
                 <br />
                 노래가 되어 돌아옵니다
               </h1>
-              <p className="mt-4 max-w-[520px] text-[14px] leading-[1.7] text-fg-2">
+              <p className="mt-4 max-w-[520px] text-[13px] leading-[1.7] text-fg-2 sm:text-[14px]">
                 초희는 AI로 만든 음악을 공유하는 한국어 스트리밍 플랫폼이자, 가사만으로도 작품을
                 나눌 수 있는 공간입니다. 다른 창작자들이 당신의 가사에 음악을 입혀 제안하고,
                 당신은 그중 하나를 채택해 공식 음원으로 만듭니다.
               </p>
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-2 sm:mt-8 sm:gap-3">
               <Link
                 href="/upload/lyrics"
-                className="rounded-md bg-accent px-5 py-2.5 text-[13px] font-medium text-accent-fg transition duration-fast hover:brightness-110"
+                className="rounded-md bg-accent px-4 py-2 text-[13px] font-medium text-accent-fg transition duration-fast hover:brightness-110 sm:px-5 sm:py-2.5"
               >
                 가사 쓰기
               </Link>
               <Link
                 href="/upload/track"
-                className="rounded-md border border-bd-2 bg-bg-2 px-5 py-2.5 text-[13px] font-medium text-fg-1 transition duration-fast hover:bg-bg-3"
+                className="rounded-md border border-bd-2 bg-bg-2 px-4 py-2 text-[13px] font-medium text-fg-1 transition duration-fast hover:bg-bg-3 sm:px-5 sm:py-2.5"
               >
                 곡 올리기
               </Link>
               <Link
                 href="/discover"
-                className="rounded-md bg-transparent px-5 py-2.5 text-[13px] font-medium text-fg-2 transition duration-fast hover:text-fg-1"
+                className="rounded-md bg-transparent px-4 py-2 text-[13px] font-medium text-fg-2 transition duration-fast hover:text-fg-1 sm:px-5 sm:py-2.5"
               >
                 먼저 둘러보기
               </Link>
             </div>
           </div>
-          <div className="flex flex-col rounded-xl border border-bd-1 bg-bg-1 p-8 shadow-1">
+          <div className="flex flex-col rounded-xl border border-bd-1 bg-bg-1 p-6 shadow-1 sm:p-8">
             <p className="text-[11px] uppercase tracking-wider text-fg-4">오늘의 한 연</p>
             <Lyrics
               size="lg"
@@ -134,27 +134,27 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mb-12">
-        <SectionHeader title="새로 도착한 곡" hint="최근에 공유된 완성곡" />
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          {demoSongs.map((s) => (
-            <SongCard key={s.id} {...s} durationLabel={s.duration} />
-          ))}
-        </div>
-      </section>
-
-      <section className="mb-12">
-        <SectionHeader title="음악을 기다리는 가사" hint="당신이 음악을 붙여줄 수도 있어요" />
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <section className="mb-14">
+        <SectionHeader kicker="LYRICS · 음악을 기다립니다" title="새 가사" />
+        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {demoLyrics.map((l) => (
             <LyricsCard key={l.id} {...l} />
           ))}
         </div>
       </section>
 
+      <section className="mb-14">
+        <SectionHeader kicker="SONGS · 이번 주 완성" title="새 곡" />
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          {demoSongs.map((s) => (
+            <SongCard key={s.id} {...s} durationLabel={s.duration} />
+          ))}
+        </div>
+      </section>
+
       <section className="mb-16">
-        <SectionHeader title="앨범" hint="하나의 컨셉으로 묶인 호흡" />
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+        <SectionHeader kicker="ALBUMS · 한 호흡으로 묶인" title="새 앨범" />
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {demoAlbums.map((a) => (
             <AlbumCard
               key={a.id}
@@ -171,15 +171,22 @@ export default async function HomePage() {
   );
 }
 
-function SectionHeader({ title, hint }: { title: string; hint?: string }) {
+function SectionHeader({ kicker, title }: { kicker: string; title: string }) {
   return (
-    <div className="flex items-end justify-between border-b border-bd-1 pb-3">
+    <div className="flex items-end justify-between">
       <div>
-        <h2 className="font-serif text-[24px] text-fg-1">{title}</h2>
-        {hint && <p className="mt-1 text-[12px] text-fg-3">{hint}</p>}
+        <p className="mono mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">
+          {kicker}
+        </p>
+        <h2 className="font-serif text-[26px] font-medium leading-tight tracking-[0.005em] text-fg-1">
+          {title}
+        </h2>
       </div>
-      <Link href="/discover" className="text-[12px] text-fg-3 hover:text-fg-1">
-        더 보기 →
+      <Link
+        href="/discover"
+        className="text-[12px] text-fg-3 transition duration-fast hover:text-fg-1"
+      >
+        전체 보기 →
       </Link>
     </div>
   );

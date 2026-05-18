@@ -29,16 +29,18 @@ export default async function MePage() {
 
   return (
     <AppShell activeKey="library" rightActions={<UserMenu user={me} />}>
-      <section className="mb-8 flex items-center gap-6 border-b border-bd-1 pb-8">
+      <section className="mb-8 flex flex-col items-start gap-4 border-b border-bd-1 pb-8 sm:flex-row sm:items-center sm:gap-6">
         <Avatar name={me.displayName} src={me.avatarUrl ?? undefined} size="xl" />
-        <div className="flex flex-col gap-1">
-          <h1 className="font-serif text-[28px] text-fg-1">{me.displayName}</h1>
-          <p className="text-[12px] text-fg-3">
+        <div className="flex min-w-0 flex-col gap-1">
+          <h1 className="break-keep font-serif text-[24px] text-fg-1 sm:text-[28px]">
+            {me.displayName}
+          </h1>
+          <p className="break-all text-[12px] text-fg-3">
             @{me.handle}
             {me.email ? ` · ${me.email}` : ''}
           </p>
-          {me.bio && <p className="mt-2 text-[13px] leading-[1.7] text-fg-2">{me.bio}</p>}
-          <div className="mt-3 flex items-center gap-2">
+          {me.bio && <p className="mt-2 break-keep text-[13px] leading-[1.7] text-fg-2">{me.bio}</p>}
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <Link
               href="/me/edit"
               className="rounded-md border border-bd-2 bg-bg-2 px-3 py-1.5 text-[12px] font-medium text-fg-1 transition duration-fast hover:bg-bg-3"
