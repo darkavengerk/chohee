@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { Sidebar, TopBar, Input } from '@chohee/ui';
