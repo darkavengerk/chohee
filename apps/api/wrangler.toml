@@ -3,6 +3,7 @@ main = "src/index.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
+# ── 기본 env (로컬 wrangler dev) ──
 [vars]
 WEB_ORIGIN = "http://localhost:5173"
 KAKAO_REDIRECT_URI = "http://localhost:5173/auth/kakao/callback"
@@ -24,10 +25,25 @@ migrations_dir = "../../packages/db/drizzle"
 binding = "BUCKET"
 bucket_name = "chohee-media"
 
+# ── production env ──
+# Cloudflare wrangler는 named env에 top-level binding을 상속하지 않으므로,
+# d1/r2/vars를 production 블록에 다시 명시해야 한다.
 [env.production]
 name = "chohee-api-production"
 
 [env.production.vars]
 WEB_ORIGIN = "https://chohee.pages.dev"
 KAKAO_REDIRECT_URI = "https://chohee.pages.dev/auth/kakao/callback"
+JWT_ACCESS_TTL_SECONDS = "3600"
+JWT_REFRESH_TTL_SECONDS = "2592000"
 R2_BUCKET_NAME = "chohee-media"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "chohee"
+database_id = "86a1d468-0377-485e-8dea-d8e194d1749a"
+migrations_dir = "../../packages/db/drizzle"
+
+[[env.production.r2_buckets]]
+binding = "BUCKET"
+bucket_name = "chohee-media"
