@@ -197,7 +197,9 @@ router.get('/kakao/url', (c) => {
     client_id: c.env.KAKAO_CLIENT_ID,
     redirect_uri: c.env.KAKAO_REDIRECT_URI,
     state,
-    scope: 'profile_nickname profile_image account_email',
+    // account_email은 비즈니스 앱 등록을 요구하므로 기본 scope에서 제외.
+    // 필요 시 비즈니스 등록 후 'account_email' 추가하고 동의항목 활성화.
+    scope: 'profile_nickname profile_image',
   });
   return ok(c, {
     url: `https://kauth.kakao.com/oauth/authorize?${params.toString()}`,

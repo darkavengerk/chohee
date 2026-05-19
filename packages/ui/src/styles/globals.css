@@ -1,9 +1,10 @@
+/* @import는 CSS 사양상 다른 모든 규칙 앞에 와야 한다. */
+@import './tokens.css';
+@import './fonts.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './tokens.css';
-@import './fonts.css';
 
 @layer base {
   html,

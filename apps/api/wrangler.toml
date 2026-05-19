@@ -4,8 +4,8 @@ compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-WEB_ORIGIN = "http://localhost:3000"
-KAKAO_REDIRECT_URI = "http://localhost:3000/api/auth/kakao/callback"
+WEB_ORIGIN = "http://localhost:5173"
+KAKAO_REDIRECT_URI = "http://localhost:5173/auth/kakao/callback"
 JWT_ACCESS_TTL_SECONDS = "3600"
 JWT_REFRESH_TTL_SECONDS = "2592000"
 R2_BUCKET_NAME = "chohee-media"
@@ -29,5 +29,5 @@ name = "chohee-api-production"
 
 [env.production.vars]
 WEB_ORIGIN = "https://chohee.pages.dev"
-KAKAO_REDIRECT_URI = "https://chohee.pages.dev/api/auth/kakao/callback"
+KAKAO_REDIRECT_URI = "https://chohee.pages.dev/auth/kakao/callback"
 R2_BUCKET_NAME = "chohee-media"

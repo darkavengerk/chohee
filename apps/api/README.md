@@ -1,6 +1,6 @@
 # apps/api
 
-Cloudflare Workers + Hono. RESTful API.
+Cloudflare Workers + Hono. RESTful API. **Web(`apps/web`)이 SvelteKit으로 갈아탔지만 API는 그대로 유지.**
 
 > **음악 생성 정책 메모.** Phase 1은 "가사 작성자가 음악을 받고 싶다"는 의향을 발행하는 데까지(`/lyrics/:id/request-music`)만 구현. Phase 2에서 **다른 사용자가 그 가사에 음악을 제안**하고 **가사 작성자가 채택**하는 흐름이 추가될 예정 (`/lyrics/:id/submissions`, `/lyrics/:id/adopt/:submissionId` 등). 운영자는 음악을 만들지 않으며 `/generation/admin/*`는 Phase 2에서 모더레이션 도구로 재정의된다. 상세는 [MILESTONES.md](../../MILESTONES.md)의 Phase 2 섹션 참조.
 
@@ -10,6 +10,8 @@ Cloudflare Workers + Hono. RESTful API.
 pnpm --filter @chohee/api dev
 # → http://localhost:8787
 ```
+
+카카오 OAuth callback은 web의 SvelteKit endpoint(`/auth/kakao/callback`)가 받아 이 API의 `POST /auth/kakao`에 전달한다. `KAKAO_REDIRECT_URI`는 web 도메인 기준.
 
 ## 엔드포인트
 

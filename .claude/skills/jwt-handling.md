@@ -51,7 +51,7 @@ requireAdmin  → user.isAdmin 아니면 403
 ## 리프레시 흐름
 
 ```
-[웹] /auth/refresh (쿠키의 chohee_rt 사용)
+[웹 SvelteKit] /auth/refresh +server.ts (쿠키의 chohee_rt 사용)
   └─ Workers: tokenHash로 refresh_tokens 조회
      ├─ 없거나 revokedAt 있거나 만료 → 401
      ├─ revokedAt 설정 (회전)
@@ -61,6 +61,8 @@ requireAdmin  → user.isAdmin 아니면 403
 ```
 
 웹 클라이언트는 401을 받았을 때 자동으로 `/auth/refresh`를 호출 후 원래 요청을 재시도하는 인터셉터를 추가하는 것이 자연스러움 (Phase 1 기본 클라이언트는 단순). 후속에서 자동 재시도 도입 가능.
+
+SvelteKit `+server.ts`로 client-facing refresh endpoint를 두고 내부에서 Workers API와 통신 — same-origin cookie 흐름 유지.
 
 ## 보안 체크
 

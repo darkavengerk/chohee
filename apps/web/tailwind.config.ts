@@ -1,12 +1,12 @@
 import type { Config } from 'tailwindcss';
+// @ts-expect-error - CJS preset, no types
 import preset from '@chohee/ui/tailwind-preset';
 
 const config: Config = {
   presets: [preset],
   content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    '../../packages/ui/src/**/*.{ts,tsx}',
+    './src/**/*.{svelte,ts,js}',
+    '../../packages/ui/src/**/*.{svelte,ts,js}',
   ],
 };
 

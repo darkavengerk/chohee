@@ -4,36 +4,32 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --port 3000",
-    "build": "next build",
-    "start": "next start --port 3000",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "clean": "rm -rf .next .turbo"
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "lint": "eslint . && prettier --check .",
+    "clean": "rm -rf .svelte-kit .turbo node_modules"
   },
   "dependencies": {
-    "@chohee/db": "workspace:*",
     "@chohee/shared": "workspace:*",
     "@chohee/ui": "workspace:*",
     "@ffmpeg/ffmpeg": "^0.12.10",
-    "@ffmpeg/util": "^0.12.1",
-    "clsx": "^2.1.1",
-    "next": "15.5.9",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "tailwind-merge": "^2.5.2",
-    "zod": "^3.23.8",
-    "zustand": "^4.5.5"
+    "@ffmpeg/util": "^0.12.1"
   },
   "devDependencies": {
+    "@sveltejs/adapter-cloudflare": "^4.7.0",
+    "@sveltejs/kit": "^2.5.27",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@types/node": "^20.14.0",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.20",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "^15.5.18",
     "postcss": "^8.4.45",
+    "prettier-plugin-svelte": "^3.2.6",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
     "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vite": "^5.4.6"
   }
 }

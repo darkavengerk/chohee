@@ -54,6 +54,7 @@ API, UI, DB 스키마 어디서든 "트랙 위주"로만 생각하면 안 된다
 - 카카오 OAuth 흐름을 구현한다면 → `.claude/skills/kakao-oauth.md` 확인
 - ffmpeg.wasm 통합 작업이라면 → `.claude/skills/ffmpeg-wasm.md` 확인
 - D1 마이그레이션을 다룬다면 → `.claude/skills/d1-migrations.md` 확인
+- SvelteKit 라우팅/SSR/load 패턴을 다룬다면 → `.claude/skills/sveltekit-patterns.md` 확인
 
 스킬 파일이 아직 없는 영역에 대한 작업이라면 코드만 작성하고, 작업 완료 후 "이 영역에 스킬을 만들지" 사용자에게 제안한다.
 
@@ -61,13 +62,13 @@ API, UI, DB 스키마 어디서든 "트랙 위주"로만 생각하면 안 된다
 
 작업 중 다음에 해당하는 내용을 발견하면 스킬로 분리할 후보로 표시한다:
 
-- **반복적으로 참조되는 세부 절차**: 카카오 OAuth 콜백 흐름, R2 서명된 URL 생성 코드 패턴, JWT 발급/검증 로직, ffmpeg.wasm 호출 방식
+- **반복적으로 참조되는 세부 절차**: 카카오 OAuth 콜백 흐름, R2 서명된 URL 생성 코드 패턴, JWT 발급/검증 로직, ffmpeg.wasm 호출 방식, SvelteKit load/action 패턴
 - **외부 시스템 통합의 세부사항**: 카카오 API 응답 구조, Suno API 호출 방법 (Phase 3), Cloudflare 리소스 생성/설정 절차
 - **자주 변경 가능성이 있는 구현 디테일**: R2 객체 키 명명 규칙, 에러 코드 체계, 페이지네이션 패턴
 - **도메인 지식 중 깊이 있는 부분**: 음악 메타데이터 형식, LUFS 측정 알고리즘, 파형 데이터 구조
 - **검증/테스트 시나리오**: Phase별 검증 체크리스트, 수동 QA 절차
 
-### 스킬로 분리하지 말아야 할 것**
+### 스킬로 분리하지 말아야 할 것
 
 다음은 `CLAUDE.md`에 남겨둔다:
 
@@ -113,28 +114,42 @@ API, UI, DB 스키마 어디서든 "트랙 위주"로만 생각하면 안 된다
 
 | 영역 | 선택 | 비고 |
 |------|------|------|
-| 프론트엔드 | Next.js 14+ App Router + TypeScript + Tailwind | 서버 컴포넌트 우선, 필요 시 'use client' |
+| 프론트엔드 | SvelteKit (Svelte 5 runes) + TypeScript + Tailwind | Server-first SSR. `+page.svelte`/`+page.server.ts`/`+server.ts` 패턴 |
+| 어댑터 | `@sveltejs/adapter-cloudflare` | Cloudflare Pages Functions로 빌드 |
 | 백엔드 | Cloudflare Workers + Hono | RESTful API |
 | DB | Cloudflare D1 + Drizzle ORM | SQLite 기반 |
 | 스토리지 | Cloudflare R2 | S3 호환, egress 무료 |
-| 인증 | 카카오 OAuth + 자체 JWT | httpOnly 쿠키 |
-| 오디오 처리 | ffmpeg.wasm (클라이언트), Web Audio API | 서버 트랜스코딩 없음 |
+| 인증 | 카카오 OAuth + 자체 JWT | httpOnly 쿠키. web과 api가 같은 eTLD+1 도메인이거나, web이 API를 server-side로 프록시 |
+| 오디오 처리 | ffmpeg.wasm (Web Worker), Web Audio API | 서버 트랜스코딩 없음 |
 | 패키지 관리 | pnpm + Turborepo | 모노레포 |
+
+### 왜 SvelteKit인가 (기록)
+
+초기에 Next.js 14로 시작했으나 Cloudflare Pages 배포 시 `@cloudflare/next-on-pages`의 deep webpack 호환성 문제로 빌드 fail. Next 15 + adapter 업그레이드/Vercel 이전 모두 검토했으나, **Cloudflare 1급 호환** + **번들/성능** + **장기 유지보수 관점**에서 SvelteKit으로 갈아탔다. 2026-05-19 결정.
 
 ## 모노레포 구조
 
 ```
 apps/
-  web/          # Next.js 프론트엔드 (사용자용)
+  web/          # SvelteKit 프론트엔드 (사용자용). adapter-cloudflare로 빌드 → Cloudflare Pages
   api/          # Cloudflare Workers + Hono
   admin/        # 운영자 어드민 (Phase 2부터)
 packages/
   shared/       # 공유 타입, 상수, 유틸 (양쪽에서 import)
   db/           # Drizzle 스키마, 마이그레이션, 쿼리 헬퍼
-  ui/           # 디자인 시스템 토큰, 공통 컴포넌트
+  ui/           # 디자인 시스템 토큰 + Svelte 컴포넌트
 ```
 
 새 코드를 만들 때 어디에 둘지 명확히 결정한다. 타입은 가능한 한 `packages/shared`에 두어 양쪽에서 공유.
+
+### SvelteKit 라우팅 핵심
+
+- `apps/web/src/routes/+page.svelte` — 페이지 (홈은 `/`)
+- `apps/web/src/routes/+page.server.ts` — 서버 측 load (cookies, DB, 외부 API)
+- `apps/web/src/routes/+page.ts` — universal load (서버에서 첫 렌더, 이후 클라이언트에서도)
+- `apps/web/src/routes/+layout.svelte` / `+layout.server.ts` — nested layout
+- `apps/web/src/routes/api/auth/kakao/callback/+server.ts` — API endpoint (Workers와 별개 — 같은 origin OAuth callback용)
+- `apps/web/src/hooks.server.ts` — 모든 요청에 적용되는 hook (auth/cors/headers)
 
 ## 코딩 컨벤션
 
@@ -149,11 +164,19 @@ packages/
 - `strict: true` 필수
 - `any` 사용 금지 (외부 라이브러리 타입 부재 등 불가피한 경우만, 주석 필수)
 - API 요청/응답은 Zod로 런타임 검증 + 타입 추출
+- SvelteKit의 `PageServerLoad`, `Actions`, `RequestHandler` 타입은 `./$types`에서 import
+
+### Svelte 컴포넌트
+
+- **Svelte 5 runes 우선**: `$state`, `$derived`, `$effect`, `$props`, `$bindable`
+- 상태가 있는 컴포넌트: `let count = $state(0);`
+- 외부 입력: `let { value, oninput }: Props = $props();`
+- 부수 효과: `$effect(() => { ... });`
+- `export let` (Svelte 4 패턴)은 사용 금지 — 새 컴포넌트는 runes로
 
 ### 코드 스타일
 
-- ESLint + Prettier 자동 적용
-- 함수형 컴포넌트와 hooks
+- ESLint + Prettier (prettier-plugin-svelte) 자동 적용
 - 명시적 에러 처리
 - 매직 넘버/문자열은 상수로 분리 (`packages/shared/constants`)
 
@@ -167,19 +190,21 @@ packages/
 - **모든 mutation API는 인증 미들웨어 통과 필수**.
 - **권한 확인**: 자기 콘텐츠만 수정/삭제. 어드민 권한은 별도 미들웨어.
 - **SQL 인젝션 방지**: Drizzle 쿼리 빌더 사용, raw SQL은 prepared statement만.
+- **Cross-site 쿠키 주의**: web과 api가 서로 다른 eTLD+1(`*.pages.dev`와 `*.workers.dev`)이면 `SameSite=Lax`로는 cookie가 안 감. SvelteKit의 서버 endpoint(`+page.server.ts`/`+server.ts`)에서 API를 호출하면 same-origin 흐름이 되므로 인증 토큰을 유지할 수 있다. 클라이언트에서 직접 API를 호출하는 경우는 최소화하고, 어쩔 수 없을 때는 SvelteKit endpoint를 프록시로 사용한다.
 
 ## 디자인 시스템
 
 `packages/ui`에서 토큰과 컴포넌트를 import한다. 페이지 코드에서 직접 색상/사이즈를 적지 않는다.
 
-```tsx
-// 좋음
-<button className="bg-accent-warm text-on-accent">
-// 나쁨
-<button className="bg-[#D4823A] text-white">
+```svelte
+<!-- 좋음 -->
+<button class="bg-accent text-accent-fg">
+
+<!-- 나쁨 -->
+<button class="bg-[#D4823A] text-white">
 ```
 
-세부 토큰 매핑과 사용 가이드는 `.claude/skills/design-system.md`를 참조 (필요 시 생성).
+세부 토큰 매핑과 사용 가이드는 `.claude/skills/design-system.md`를 참조.
 
 ## 작업 시작 체크리스트
 
@@ -195,6 +220,7 @@ packages/
 
 - [ ] 타입 에러 없음 (`pnpm typecheck`)
 - [ ] 린트 통과 (`pnpm lint`)
+- [ ] SvelteKit 빌드 통과 (`pnpm --filter @chohee/web build`)
 - [ ] 관련 테스트 작성/통과
 - [ ] 환경 변수 변경이 있으면 `.env.example` 업데이트
 - [ ] 새로 발견한 패턴/지식이 있다면 스킬로 분리할지 또는 `CLAUDE.md`에 추가할지 판단
@@ -217,3 +243,6 @@ packages/
 - 음악 생성을 즉시 처리 가정 → 비동기 제안/채택 모델
 - 색상/사이즈 하드코딩 → 디자인 토큰 경유
 - 세세한 절차를 `CLAUDE.md`에 누적 → 스킬로 분리
+- 클라이언트에서 API 직접 호출 후 cross-site 쿠키 문제로 fail → SvelteKit endpoint를 프록시로 활용
+- `export let` (Svelte 4) 사용 → `$props()` (Svelte 5 runes)
+- `onMount` 안에서 모든 부수효과 처리 → 더 적합한 `$effect`나 `+page.ts` load 함수 사용

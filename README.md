@@ -21,24 +21,27 @@ AI로 만든 음악을 공유하는 스트리밍 서비스이자, 사용자가 �
 
 | 영역 | 선택 |
 |---|---|
-| 프론트엔드 | Next.js 14 App Router · TypeScript · Tailwind CSS |
+| 프론트엔드 | **SvelteKit** (Svelte 5 runes) · TypeScript · Tailwind CSS |
+| 호스팅 (Web) | **Cloudflare Pages** via `@sveltejs/adapter-cloudflare` |
 | 백엔드 | Cloudflare Workers · Hono |
 | DB | Cloudflare D1 · Drizzle ORM |
-| 스토리지 | Cloudflare R2 (S3 호환) |
+| 스토리지 | Cloudflare R2 (S3 호환, egress 무료) |
 | 인증 | 카카오 OAuth + 자체 HS256 JWT (httpOnly 쿠키) |
 | 오디오 인코딩 | 클라이언트의 ffmpeg.wasm (128/192/320 kbps AAC) |
 | 패키지 매니저 | pnpm + Turborepo |
+
+> 이전에 Next.js 14로 시작했으나 Cloudflare Pages와의 빌드 호환성 문제로 SvelteKit으로 전환. 자세한 내용은 [MILESTONES.md#히스토리](./MILESTONES.md#히스토리).
 
 ## 모노레포 구조
 
 ```
 apps/
-  web/      # Next.js 14 사용자 웹
+  web/      # SvelteKit 사용자 웹 (adapter-cloudflare)
   api/      # Cloudflare Workers + Hono
 packages/
   shared/   # 공유 타입, Zod 스키마, 상수
   db/       # Drizzle 스키마, 마이그레이션, D1 클라이언트
-  ui/       # 디자인 시스템 토큰, 컴포넌트, Tailwind 프리셋
+  ui/       # 디자인 시스템 토큰 + Svelte 컴포넌트 + Tailwind 프리셋
 .claude/
   skills/   # 영역별 상세 절차 — 작업 시 참고
 design-ref/ # 디자인 시스템 원본 (HTML 캔버스, jsx 시안)
@@ -53,19 +56,19 @@ corepack enable
 pnpm install
 ```
 
-Node 20 이상 권장 (`.nvmrc` 참조).
+Node 22 이상 권장.
 
 ### 2. Cloudflare 리소스 만들기
 
-D1 + R2 + Workers는 무료 등급으로도 충분히 시작 가능.
+D1 + R2 + Workers + Pages는 무료 등급으로도 충분히 시작 가능.
 
 ```bash
 # D1 데이터베이스
-wrangler d1 create chohee
+pnpm --filter @chohee/api exec wrangler d1 create chohee
 # → 출력된 database_id를 apps/api/wrangler.toml의 d1_databases.database_id에 채워넣기
 
 # R2 버킷
-wrangler r2 bucket create chohee-media
+pnpm --filter @chohee/api exec wrangler r2 bucket create chohee-media
 
 # R2 S3 호환 자격증명
 # Cloudflare 콘솔 → R2 → Manage R2 API Tokens → Object Read & Write 토큰 생성
@@ -75,35 +78,40 @@ wrangler r2 bucket create chohee-media
 
 1. [카카오 개발자 콘솔](https://developers.kakao.com)에서 애플리케이션 생성
 2. "카카오 로그인" 활성화
-3. Redirect URI에 `http://localhost:3000/api/auth/kakao/callback` 등록
+3. Redirect URI 등록:
+   - 로컬: `http://localhost:5173/auth/kakao/callback`
+   - 운영: `https://<pages-project>.pages.dev/auth/kakao/callback`
 4. 동의 항목 설정: 닉네임(필수), 프로필 이미지(선택), 이메일(선택)
 5. REST API 키와 Client Secret 복사
 
 ### 4. 환경 변수
 
-루트의 `.env.example`을 복사해 값을 채운 뒤 `apps/api`와 `apps/web`에 분배:
+루트의 `.env.example`을 복사해 값을 채우기:
 
 ```bash
-cp .env.example apps/web/.env.local
-# apps/web/.env.local에서 NEXT_PUBLIC_* 값들만 채우기
+# 웹 — SvelteKit dev에서 사용
+cp apps/web/.env.example apps/web/.env
 
-# Workers는 secret으로 등록
+# API — Workers secret으로 등록 (배포 시)
 cd apps/api
-wrangler secret put KAKAO_CLIENT_ID
-wrangler secret put KAKAO_CLIENT_SECRET
-wrangler secret put JWT_SECRET            # openssl rand -base64 48
-wrangler secret put R2_ACCOUNT_ID
-wrangler secret put R2_ACCESS_KEY_ID
-wrangler secret put R2_SECRET_ACCESS_KEY
+pnpm wrangler secret put KAKAO_CLIENT_ID
+pnpm wrangler secret put KAKAO_CLIENT_SECRET
+pnpm wrangler secret put JWT_SECRET            # openssl rand -base64 48
+pnpm wrangler secret put R2_ACCOUNT_ID
+pnpm wrangler secret put R2_ACCESS_KEY_ID
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY
+
+# 로컬 dev용은 apps/api/.dev.vars에 두기 (gitignored)
+cp apps/api/.dev.vars.example apps/api/.dev.vars
 ```
 
-`apps/api/wrangler.toml`의 평문 vars(`WEB_ORIGIN`, `KAKAO_REDIRECT_URI` 등)는 그대로 사용해도 무방. 프로덕션은 `[env.production]` 섹션 참조.
+`apps/api/wrangler.toml`의 평문 vars(`WEB_ORIGIN`, `KAKAO_REDIRECT_URI` 등)는 환경별 섹션 참조.
 
 ### 5. D1 마이그레이션 적용
 
 ```bash
 pnpm db:migrate:local      # 로컬 SQLite
-pnpm db:migrate:prod       # Cloudflare D1 원격
+pnpm db:migrate:remote     # Cloudflare D1 원격
 ```
 
 세부 절차는 `.claude/skills/d1-migrations.md`.
@@ -112,14 +120,27 @@ pnpm db:migrate:prod       # Cloudflare D1 원격
 
 ```bash
 pnpm dev
-# → web: http://localhost:3000
-# → api: http://localhost:8787
+# → web: http://localhost:5173  (SvelteKit Vite dev server)
+# → api: http://localhost:8787  (Wrangler dev)
 ```
+
+카카오 OAuth 설정 없이도 보호 페이지를 보고 싶을 때 — API의 `/auth/dev-login` 엔드포인트를 사용 (`apps/api/.dev.vars`에 `DEV_LOGIN_ENABLED=1`). 로그인 페이지의 DEV 박스에서 핸들만 입력하면 로그인 완료.
+
+### 7. Cloudflare Pages 배포
+
+1. Cloudflare 대시보드 → Pages → Create application → Connect to Git → 저장소 선택
+2. Root directory: `apps/web`
+3. Build command: `pnpm install --frozen-lockfile && pnpm --filter @chohee/web build`
+4. Build output: `apps/web/.svelte-kit/cloudflare`
+5. 환경 변수: `PUBLIC_API_BASE_URL` = API Workers URL
+6. Compatibility flag: `nodejs_compat`
+
+세부는 `.claude/skills/cloudflare-pages-deploy.md` (필요 시 생성).
 
 ## 검증 시나리오 (Phase 1)
 
 1. `pnpm dev`로 web/api 동시 실행
-2. http://localhost:3000 → 로그인 → 카카오 인증 → `/me` 진입
+2. http://localhost:5173 → 로그인 → 카카오 인증 (또는 dev-login) → `/me` 진입
 3. 프로필 수정 → 저장 → 새로고침 후 유지 확인
 4. `/upload/track`에서 5분 MP3 → 멀티 비트레이트 인코딩 → R2 업로드 (1분 이내 목표)
 5. `/upload/lyrics`에서 가사 작성 + 음악 제안 받기 옵션 → `music_generation_requests` 레코드 생성 (Phase 1은 의향 발행까지. 다른 사용자의 제안 수집과 채택은 Phase 2.)
@@ -131,12 +152,13 @@ pnpm dev
 
 작업 영역별 세부 절차는 `.claude/skills/`에 분리:
 
-- `design-system.md` — 디자인 토큰과 컴포넌트 사용 가이드
-- `kakao-oauth.md` — 카카오 로그인 전체 흐름과 보안
-- `jwt-handling.md` — 자체 JWT 발급/검증/회전
-- `r2-presigned-urls.md` — R2 직접 업로드 패턴
-- `ffmpeg-wasm.md` — 브라우저 인코딩과 LUFS 측정
+- `design-system.md` — 디자인 토큰과 Svelte 컴포넌트 사용 가이드
+- `kakao-oauth.md` — 카카오 로그인 전체 흐름과 보안 (SvelteKit endpoint 기반)
+- `jwt-handling.md` — 자체 JWT 발급/검증/회전 (API 영역)
+- `r2-presigned-urls.md` — R2 직접 업로드 패턴 (API 영역)
+- `ffmpeg-wasm.md` — 브라우저 인코딩과 LUFS 측정 (Web Worker)
 - `d1-migrations.md` — D1 + Drizzle 마이그레이션
+- `sveltekit-patterns.md` — SvelteKit load/actions/hooks/store 패턴 (필요 시 작성)
 
 ## 다음 단계 (Phase 2)
 

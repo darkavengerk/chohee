@@ -57,7 +57,7 @@ R2 콘솔에서 API 토큰 발급 시 "Object Read & Write" 권한 부여 후 S3
 
 ## 클라이언트 측 업로드
 
-`apps/web/lib/upload.ts:uploadBlobToPresignedUrl` — XHR로 진행률 콜백 받으며 PUT. fetch에는 업로드 진행률 API가 표준이 아니므로 XHR을 유지.
+`apps/web/src/lib/upload.ts:uploadBlobToPresignedUrl` — XHR로 진행률 콜백 받으며 PUT. fetch에는 업로드 진행률 API가 표준이 아니므로 XHR을 유지. Svelte 컴포넌트의 이벤트 핸들러나 `$effect` 내부에서 호출 (SSR 단계에서 XHR/Blob 사용 금지).
 
 ## 다운로드 (Phase 2)
 

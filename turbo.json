@@ -5,7 +5,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", ".wrangler/**"]
+      "outputs": [".svelte-kit/**", "!.svelte-kit/cache/**", "dist/**", ".wrangler/**"]
     },
     "dev": {
       "cache": false,

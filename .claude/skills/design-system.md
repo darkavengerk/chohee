@@ -1,6 +1,6 @@
 # 디자인 시스템 사용 가이드
 
-> Chohee 디자인 시스템(`packages/ui`)을 일관되게 사용하는 방법.
+> Chohee 디자인 시스템(`packages/ui`)을 일관되게 사용하는 방법. **Svelte 5 runes 기반.**
 
 ## 언제 사용하는가
 
@@ -32,27 +32,35 @@
 | 그림자 | `shadow-1`, `shadow-2`, `shadow-3`, `shadow-glow` | 다크 위에서는 약하게 |
 | 폰트 | `font-sans`, `font-serif`, `font-mono` | sans=Pretendard, serif=Noto Serif KR, mono=JetBrains Mono |
 
+토큰은 CSS variables(`packages/ui/src/styles/tokens.css`)을 Tailwind preset에서 `oklch(from var(--token) l c h / <alpha-value>)`로 감싸 노출 — `bg-accent/20` 같은 슬래시 알파 모디파이어가 동작.
+
 ## 컴포넌트 빠르게 보기
 
-```tsx
-import {
-  Button, Input, Textarea, Card, Badge, StatusBadge, Chip, Avatar, ProgressBar,
-  DropZone, Tabs, TabsList, TabsTrigger, TabsContent, ToastProvider, useToast,
-  Dialog, Lyrics, Waveform, Sidebar, TopBar, CoverArt, SongCard, LyricsCard, AlbumCard,
-  FooterPlayer,
-} from '@chohee/ui';
+```svelte
+<script lang="ts">
+  import {
+    Button, Input, Textarea, Card, Badge, StatusBadge, Chip, Avatar, ProgressBar,
+    DropZone, Tabs, TabsList, TabsTrigger, TabsContent, Toast, Dialog,
+    Lyrics, Waveform, Sidebar, TopBar, CoverArt, SongCard, LyricsCard, AlbumCard,
+    FooterPlayer, Icon,
+  } from '@chohee/ui';
+</script>
 ```
 
-- **Button**: `variant: primary|secondary|outline|ghost|danger`, `size: sm|md|lg`. `loading`, `leftIcon`, `rightIcon`, `fullWidth`.
-- **StatusBadge**: `status: waiting|generating|complete|revision`. 라벨과 색은 자동.
+- **Button**: `variant: 'primary'|'secondary'|'outline'|'ghost'|'danger'`, `size: 'sm'|'md'|'lg'`. `loading`, `leftIcon`/`rightIcon` snippet, `fullWidth`.
+- **StatusBadge**: `status: 'waiting'|'generating'|'complete'|'revision'`. 라벨과 색은 자동.
 - **Lyrics**: `<Lyrics text={...} size="base|lg|xl" showLineNumbers />`. 빈 줄로 연 구분. serif + keep-all.
 - **DropZone**: `accept`, `multiple`, `onFiles`, `title`, `hint`. 드래그 중 액센트 배경.
 - **Waveform**: `durationSeconds`, `positionSeconds`, `playing`, `onSeek`. 기본 92 막대.
-- **AppShell** (apps/web): Sidebar + TopBar를 래핑. `activeKey`로 사이드바 활성 상태 지정.
+- **Icon**: `<Icon name="home" size={17} />` — currentColor 따름.
+
+### AppShell 패턴 (web 앱)
+
+`apps/web/src/lib/components/AppShell.svelte` 정도에 두고, 각 페이지 `+page.svelte`에서 wrap. Sidebar + TopBar + 메인 콘텐츠를 묶어 layout처럼 동작. 또는 `+layout.svelte`에 직접 두면 더 자연스러움.
 
 ## 가사 작성/표시 규칙
 
-```tsx
+```svelte
 <Lyrics text={l.text} size="lg" />
 ```
 
@@ -69,9 +77,47 @@ import {
 
 녹색 정체성을 더 강조하려면 `<html data-accent="pine" data-base="green">`로 표면 언더톤까지 녹색으로 시프트. 시스템 전체가 따라 움직인다. 새 색을 추가하지 않는다.
 
+SvelteKit에서는 `apps/web/src/app.html`의 `<html>` 태그에 속성을 직접 적용:
+
+```html
+<html lang="ko" data-accent="pine">
+  ...
+</html>
+```
+
+## Svelte 컴포넌트 작성 패턴 (Svelte 5)
+
+```svelte
+<script lang="ts">
+  type Props = {
+    title: string;
+    onclick?: () => void;
+  };
+  let { title, onclick }: Props = $props();
+  let count = $state(0);
+  let doubled = $derived(count * 2);
+
+  $effect(() => {
+    console.log('mounted or count changed', count);
+  });
+</script>
+
+<button onclick={() => { count++; onclick?.(); }}>
+  {title}: {count} (×2 = {doubled})
+</button>
+```
+
+- `$props()` for inputs (Svelte 4의 `export let` 대체)
+- `$state()` for reactive local state
+- `$derived()` for computed values
+- `$effect()` for side effects (mount + reactive)
+- 이벤트 핸들러: `on:click` → `onclick` (Svelte 5)
+
 ## 흔한 실수
 
 - `text-white`, `bg-gray-900` 같은 Tailwind 기본 팔레트 사용 → 토큰 클래스 사용
 - 카드에 `shadow-lg` (Tailwind 기본) → `shadow-2` (디자인 토큰)
 - `transition-all duration-300` → `transition duration-base`
 - 가사 카드에 `font-sans` → 반드시 `font-serif` 또는 `<Lyrics>` 사용
+- Svelte 4의 `export let foo` 사용 → `$props()` 사용
+- `on:click={handler}` → `onclick={handler}` (Svelte 5 attribute 형식)
