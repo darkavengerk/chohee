@@ -3,9 +3,10 @@ import type { ReactNode } from 'react';
 import { ToastProvider } from '@chohee/ui';
 import './globals.css';
 
-// Cloudflare Pages는 Workers(v8 isolate) 위에서 동작 — Node.js API 사용 불가.
-// 루트 layout에 선언하면 하위 모든 page segment에 상속됨.
-export const runtime = 'edge';
+// 주의: 여기에 `export const runtime = 'edge'`를 두면 Next 14.2.x의 page-data
+// 수집 단계에서 webpack chunk loader가 sandbox에서 평가되며
+// `ReferenceError: document is not defined`로 빌드 실패. 각 page/route에
+// 개별 선언한다.
 
 export const metadata: Metadata = {
   title: '초희 — 가사가 음악이 되는 공간',

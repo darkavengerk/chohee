@@ -4,6 +4,8 @@ import { UserMenu } from '@/components/UserMenu';
 import { getCurrentUserFromServer } from '@/lib/auth';
 import { TrackUploadFlow } from './TrackUploadFlow';
 
+export const runtime = 'edge';
+
 export default async function TrackUploadPage() {
   const me = await getCurrentUserFromServer();
   if (!me) redirect('/login?next=/upload/track');

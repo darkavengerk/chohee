@@ -12,6 +12,8 @@ import { AppShell } from '@/components/AppShell';
 import { UserMenu } from '@/components/UserMenu';
 import { getCurrentUserFromServer } from '@/lib/auth';
 
+export const runtime = 'edge';
+
 // Phase 1: API에 콘텐츠가 없어도 화면이 동작하도록 데모 데이터를 표시.
 // 데이터가 채워지면 fetch로 교체할 예정.
 

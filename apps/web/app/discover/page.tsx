@@ -3,6 +3,8 @@ import { AppShell } from '@/components/AppShell';
 import { UserMenu } from '@/components/UserMenu';
 import { getCurrentUserFromServer } from '@/lib/auth';
 
+export const runtime = 'edge';
+
 export default async function DiscoverPage() {
   const me = await getCurrentUserFromServer();
   return (

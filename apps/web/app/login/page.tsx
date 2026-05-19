@@ -5,6 +5,8 @@ import { Brand } from '@/components/Brand';
 import { getCurrentUserFromServer } from '@/lib/auth';
 import { LoginActions } from './LoginActions';
 
+export const runtime = 'edge';
+
 export default async function LoginPage({
   searchParams,
 }: {
