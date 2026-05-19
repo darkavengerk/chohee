@@ -17,7 +17,7 @@ R2_BUCKET_NAME = "chohee-media"
 [[d1_databases]]
 binding = "DB"
 database_name = "chohee"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "86a1d468-0377-485e-8dea-d8e194d1749a"
 migrations_dir = "../../packages/db/drizzle"
 
 [[r2_buckets]]
@@ -28,6 +28,6 @@ bucket_name = "chohee-media"
 name = "chohee-api-production"
 
 [env.production.vars]
-WEB_ORIGIN = "https://chohee.app"
-KAKAO_REDIRECT_URI = "https://chohee.app/api/auth/kakao/callback"
+WEB_ORIGIN = "https://chohee.pages.dev"
+KAKAO_REDIRECT_URI = "https://chohee.pages.dev/api/auth/kakao/callback"
 R2_BUCKET_NAME = "chohee-media"
