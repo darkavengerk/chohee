@@ -1,0 +1,11 @@
+# Cloudflare Pages 빌드 설정.
+#
+# Pages는 레포 루트의 wrangler.toml을 읽어 빌드 산출물 위치와 호환성 플래그를 결정.
+# 이 파일은 Pages 전용이며, Workers API (apps/api/wrangler.toml)와는 무관.
+#
+# 이 설정이 Pages 대시보드의 "Build output directory" 설정보다 우선.
+
+name = "chohee"
+pages_build_output_dir = "apps/web/.svelte-kit/cloudflare"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
