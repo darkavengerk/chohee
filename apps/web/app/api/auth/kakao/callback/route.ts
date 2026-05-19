@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { env } from '@/lib/env';
 
+// route handler는 layout 상속을 안 받으므로 명시 필요.
+export const runtime = 'edge';
+
 // 카카오 OAuth redirect_uri. 받은 code를 API(Workers)에 전달하여
 // 자체 JWT 쿠키로 교환한다. 카카오 access token은 서버 간에만 흘러간다.
 export async function GET(req: NextRequest) {

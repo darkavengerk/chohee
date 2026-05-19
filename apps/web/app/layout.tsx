@@ -3,6 +3,10 @@ import type { ReactNode } from 'react';
 import { ToastProvider } from '@chohee/ui';
 import './globals.css';
 
+// Cloudflare Pages는 Workers(v8 isolate) 위에서 동작 — Node.js API 사용 불가.
+// 루트 layout에 선언하면 하위 모든 page segment에 상속됨.
+export const runtime = 'edge';
+
 export const metadata: Metadata = {
   title: '초희 — 가사가 음악이 되는 공간',
   description:
