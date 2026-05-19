@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="초희 로고 변형안">
+  <title>초희 로고 — 변형안 (직선 · 곡선 · 작은 동그라미)</title>
+  <circle cx="100" cy="100" r="85" fill="none" stroke="#3a3733" stroke-width="2.5"/>
+  <rect x="55" y="74" width="90" height="7" rx="3.5" fill="#a59c8e"/>
+  <path d="M75 112 Q100 94 125 112" fill="none" stroke="#a59c8e" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="100" cy="138" r="6.5" fill="#69a07a"/>
+</svg>
