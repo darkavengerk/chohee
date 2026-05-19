@@ -25,7 +25,6 @@ const cards = [
   },
 ];
 
-export const runtime = 'edge';
 
 export default async function UploadHubPage() {
   const me = await getCurrentUserFromServer();

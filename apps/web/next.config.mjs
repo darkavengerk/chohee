@@ -2,13 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@chohee/ui', '@chohee/shared'],
-  experimental: {
-    typedRoutes: false,
-  },
   async headers() {
     // SharedArrayBuffer 활성화 — ffmpeg.wasm 실행에 필요
-    // 모든 페이지에 적용하면 일부 외부 임베드가 깨질 수 있어
-    // 업로드 라우트만 격리할 수도 있음 (현재는 전 라우트 적용).
     return [
       {
         source: '/(.*)',

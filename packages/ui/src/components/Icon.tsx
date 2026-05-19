@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react';
+import type { SVGProps, ReactElement } from 'react';
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'children'> {
   size?: number;
@@ -37,7 +37,7 @@ export type IconName =
   | 'menu';
 
 // 원본 디자인의 SVG 패스. 모두 currentColor를 사용하므로 부모 text 색을 그대로 따라간다.
-const PATHS: Record<IconName, JSX.Element> = {
+const PATHS: Record<IconName, ReactElement> = {
   home: (
     <g>
       <path d="M3 11 12 4l9 7" />

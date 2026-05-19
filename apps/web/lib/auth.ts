@@ -3,7 +3,7 @@ import { COOKIE_NAMES, type CurrentUser } from '@chohee/shared';
 import { serverFetch } from './api-client';
 
 export async function getCurrentUserFromServer(): Promise<CurrentUser | null> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const at = cookieStore.get(COOKIE_NAMES.ACCESS_TOKEN);
   if (!at) return null;
   const cookieHeader = cookieStore

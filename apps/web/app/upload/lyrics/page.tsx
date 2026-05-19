@@ -4,7 +4,6 @@ import { UserMenu } from '@/components/UserMenu';
 import { getCurrentUserFromServer } from '@/lib/auth';
 import { LyricsWriteFlow } from './LyricsWriteFlow';
 
-export const runtime = 'edge';
 
 export default async function LyricsUploadPage() {
   const me = await getCurrentUserFromServer();

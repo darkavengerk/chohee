@@ -4,7 +4,6 @@ import { UserMenu } from '@/components/UserMenu';
 import { getCurrentUserFromServer } from '@/lib/auth';
 import { EditProfileForm } from './EditProfileForm';
 
-export const runtime = 'edge';
 
 export default async function EditProfilePage() {
   const me = await getCurrentUserFromServer();

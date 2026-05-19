@@ -7,12 +7,11 @@ import { serverFetch } from '@/lib/api-client';
 import { cookies } from 'next/headers';
 import type { PaginatedResult, Track, Lyrics } from '@chohee/shared';
 
-export const runtime = 'edge';
 
 export default async function AlbumCreatePage() {
   const me = await getCurrentUserFromServer();
   if (!me) redirect('/login?next=/upload/album');
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const cookieHeader = cookieStore
     .getAll()
     .map((c) => `${c.name}=${c.value}`)

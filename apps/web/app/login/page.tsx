@@ -5,15 +5,15 @@ import { Brand } from '@/components/Brand';
 import { getCurrentUserFromServer } from '@/lib/auth';
 import { LoginActions } from './LoginActions';
 
-export const runtime = 'edge';
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { next?: string };
+  searchParams: Promise<{ next?: string }>;
 }) {
+  const { next } = await searchParams;
   const me = await getCurrentUserFromServer();
-  if (me) redirect(searchParams.next ?? '/me');
+  if (me) redirect(next ?? '/me');
 
   return (
     <div className="grain flex min-h-screen flex-col items-center justify-center bg-bg-0 px-6">
@@ -37,7 +37,7 @@ export default async function LoginPage({
             <h1 className="font-serif text-[26px] text-fg-1">초희에 들어가기</h1>
             <p className="mt-1 text-[13px] text-fg-3">카카오 계정으로 1초 만에 시작합니다.</p>
           </div>
-          <LoginActions nextPath={searchParams.next} />
+          <LoginActions nextPath={next} />
           <p className="mt-2 text-[11.5px] leading-[1.7] text-fg-4">
             계속 진행하시면{' '}
             <Link className="underline hover:text-fg-2" href="/legal/terms">
